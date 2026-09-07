@@ -116,6 +116,7 @@
             color: #fff;
             transition: 0.3s;
             font-family: inherit;
+            width: 100%;
         }
 
         .filters input:focus,
@@ -125,13 +126,13 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .filters input::placeholder {
-            color: rgba(255, 255, 255, 0.15);
+        .filters input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
         }
 
-        .filters select option {
-            background: #1a1a1e;
-            color: #fff;
+        .filters input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         .btn {
@@ -169,7 +170,7 @@
         /* ---------- ROOM GRID ---------- */
         .room-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 32px;
             margin: 32px 0 56px;
         }
@@ -182,6 +183,8 @@
             border-radius: 20px;
             overflow: hidden;
             transition: 0.4s;
+            display: flex;
+            flex-direction: column;
         }
 
         .room-card:hover {
@@ -192,56 +195,61 @@
         }
 
         .room-card .img {
-            height: 200px;
+            height: 180px;
             background: rgba(255, 255, 255, 0.02);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 60px;
+            font-size: 48px;
             font-weight: 100;
             color: rgba(255, 255, 255, 0.03);
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            flex-shrink: 0;
         }
 
         .room-card .body {
-            padding: 24px 26px 30px;
+            padding: 20px 24px 26px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .room-card .body h3 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             margin-bottom: 4px;
         }
 
         .room-card .body .price {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             color: #b8a07c;
-            margin: 8px 0 10px;
+            margin: 6px 0 8px;
         }
 
         .room-card .body .price span {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 400;
             color: rgba(255, 255, 255, 0.25);
         }
 
         .room-card .body .features {
-            font-size: 14px;
+            font-size: 13px;
             color: rgba(255, 255, 255, 0.3);
             line-height: 1.6;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
+            flex: 1;
         }
 
-        .btn-book {
+        .room-card .body .btn-book {
             display: inline-block;
-            padding: 12px 32px;
+            padding: 10px 28px;
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.08);
             color: #fff;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1.5px;
@@ -250,12 +258,18 @@
             transition: 0.3s;
             font-family: inherit;
             cursor: pointer;
+            text-align: center;
+            align-self: flex-start;
         }
 
-        .btn-book:hover {
+        .room-card .body .btn-book:hover {
             background: #b8a07c;
             color: #0b0b0e;
             border-color: #b8a07c;
+        }
+
+        .room-card.hidden {
+            display: none;
         }
 
         /* ---------- FOOTER ---------- */
@@ -324,9 +338,34 @@
             letter-spacing: 0.5px;
         }
 
+        .no-rooms {
+            text-align: center;
+            padding: 60px 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.3);
+            grid-column: 1 / -1;
+        }
+
         @media (max-width: 1024px) {
             .footer-grid {
                 grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 24px 20px;
+            }
+
+            .filters .group {
+                flex: 1 1 auto;
+            }
+
+            .room-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
             }
         }
 
@@ -334,25 +373,26 @@
             .container {
                 padding: 0 20px;
             }
+
             .header-inner {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 12px;
             }
+
             nav a {
                 margin-left: 0;
                 margin-right: 24px;
             }
-            .filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
+
             .room-grid {
                 grid-template-columns: 1fr;
             }
+
             .footer-grid {
                 grid-template-columns: 1fr;
             }
+
             .footer-bottom {
                 flex-direction: column;
                 text-align: center;
@@ -374,88 +414,40 @@
 
     <main>
         <div class="container">
+            <!-- Фильтры -->
             <div class="filters">
                 <div class="group">
                     <label for="category">Категория</label>
                     <select id="category">
-                        <option value="">Все</option>
-                        <option value="standart">Стандарт</option>
-                        <option value="studio">Студия</option>
-                        <option value="lux">Люкс</option>
+                        <option value="all">Все</option>
+                        <option value="Стандарт">Стандарт</option>
+                        <option value="Студия">Студия</option>
+                        <option value="Люкс">Люкс</option>
+                        <option value="Президентский люкс">Президентский люкс</option>
                     </select>
                 </div>
+
                 <div class="group">
                     <label for="priceFrom">Цена от</label>
-                    <input type="number" id="priceFrom" placeholder="0" />
+                    <input type="number" id="priceFrom" placeholder="0" min="0" />
                 </div>
+
                 <div class="group">
                     <label for="priceTo">Цена до</label>
-                    <input type="number" id="priceTo" placeholder="20000" />
+                    <input type="number" id="priceTo" placeholder="20000" min="0" />
                 </div>
+
                 <div class="group">
                     <label for="capacity">Мест</label>
-                    <input type="number" id="capacity" placeholder="2" />
+                    <input type="number" id="capacity" placeholder="Любое" min="1" />
                 </div>
-                <button class="btn btn-apply" onclick="alert('Фильтр применён')">Применить</button>
-                <button class="btn btn-reset" onclick="alert('Фильтр сброшен')">Сбросить</button>
+
+                <button class="btn btn-apply" onclick="applyFilters()">Применить</button>
+                <button class="btn btn-reset" onclick="resetFilters()">Сбросить</button>
             </div>
 
-            <div class="room-grid">
-                <div class="room-card">
-                    <div class="img">S</div>
-                    <div class="body">
-                        <h3>Стандарт</h3>
-                        <div class="price">3 500 <span>₽</span></div>
-                        <div class="features">2 места · 18 м² · Wi-Fi · Телевизор</div>
-                        <a href="booking.html" class="btn-book">Забронировать</a>
-                    </div>
-                </div>
-                <div class="room-card">
-                    <div class="img">ST</div>
-                    <div class="body">
-                        <h3>Студия</h3>
-                        <div class="price">5 200 <span>₽</span></div>
-                        <div class="features">3 места · 28 м² · Wi-Fi · ТВ · Кондиционер</div>
-                        <a href="booking.html" class="btn-book">Забронировать</a>
-                    </div>
-                </div>
-                <div class="room-card">
-                    <div class="img">L</div>
-                    <div class="body">
-                        <h3>Люкс</h3>
-                        <div class="price">8 900 <span>₽</span></div>
-                        <div class="features">4 места · 45 м² · Wi-Fi · ТВ · Кондиционер · Холодильник</div>
-                        <a href="booking.html" class="btn-book">Забронировать</a>
-                    </div>
-                </div>
-                <div class="room-card">
-                    <div class="img">S+</div>
-                    <div class="body">
-                        <h3>Стандарт+</h3>
-                        <div class="price">4 200 <span>₽</span></div>
-                        <div class="features">2 места · 22 м² · Wi-Fi · ТВ · Кондиционер</div>
-                        <a href="booking.html" class="btn-book">Забронировать</a>
-                    </div>
-                </div>
-                <div class="room-card">
-                    <div class="img">SL</div>
-                    <div class="body">
-                        <h3>Студия Люкс</h3>
-                        <div class="price">6 500 <span>₽</span></div>
-                        <div class="features">3 места · 32 м² · Wi-Fi · ТВ · Кондиционер · Холодильник</div>
-                        <a href="booking.html" class="btn-book">Забронировать</a>
-                    </div>
-                </div>
-                <div class="room-card">
-                    <div class="img">PL</div>
-                    <div class="body">
-                        <h3>Президентский люкс</h3>
-                        <div class="price">15 000 <span>₽</span></div>
-                        <div class="features">6 мест · 75 м² · Wi-Fi · ТВ · Кондиционер · Холодильник · Джакузи</div>
-                        <a href="booking.html" class="btn-book">Забронировать</a>
-                    </div>
-                </div>
-            </div>
+            <!-- Список номеров -->
+            <div class="room-grid" id="roomGrid"></div>
         </div>
     </main>
 
@@ -494,5 +486,82 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // ---------- ДАННЫЕ НОМЕРОВ ----------
+        const rooms = [
+            { id: 1, category: 'Стандарт', price: 3500, capacity: 2, area: 18, features: 'Wi-Fi · Телевизор' },
+            { id: 2, category: 'Студия', price: 5200, capacity: 3, area: 28, features: 'Wi-Fi · Телевизор · Кондиционер' },
+            { id: 3, category: 'Люкс', price: 8900, capacity: 4, area: 45, features: 'Wi-Fi · Телевизор · Кондиционер · Холодильник' },
+            { id: 4, category: 'Стандарт', price: 4200, capacity: 2, area: 22, features: 'Wi-Fi · Телевизор · Кондиционер' },
+            { id: 5, category: 'Студия', price: 6500, capacity: 3, area: 32, features: 'Wi-Fi · Телевизор · Кондиционер · Холодильник' },
+            { id: 6, category: 'Президентский люкс', price: 15000, capacity: 6, area: 75, features: 'Wi-Fi · Телевизор · Кондиционер · Холодильник · Джакузи' },
+            { id: 7, category: 'Стандарт', price: 3800, capacity: 2, area: 19, features: 'Wi-Fi · Телевизор · Холодильник' },
+            { id: 8, category: 'Люкс', price: 10200, capacity: 4, area: 50, features: 'Wi-Fi · Телевизор · Кондиционер · Холодильник · Кофемашина' },
+            { id: 9, category: 'Студия', price: 4800, capacity: 2, area: 25, features: 'Wi-Fi · Телевизор · Кондиционер · Кофемашина' },
+            { id: 10, category: 'Президентский люкс', price: 18500, capacity: 6, area: 85, features: 'Wi-Fi · Телевизор · Кондиционер · Холодильник · Джакузи · Кофемашина' }
+        ];
+
+        // ---------- ОТРИСОВКА ----------
+        function renderRooms(roomsToRender) {
+            const grid = document.getElementById('roomGrid');
+            grid.innerHTML = '';
+
+            if (roomsToRender.length === 0) {
+                grid.innerHTML = '<div class="no-rooms">Нет номеров, соответствующих фильтрам</div>';
+                return;
+            }
+
+            roomsToRender.forEach(room => {
+                const card = document.createElement('div');
+                card.className = 'room-card';
+
+                let symbol = '🛏️';
+                if (room.category.includes('Студия')) symbol = '🛋️';
+                if (room.category.includes('Люкс')) symbol = '✨';
+                if (room.category.includes('Президентский')) symbol = '👑';
+
+                card.innerHTML = `
+                    <div class="img">${symbol}</div>
+                    <div class="body">
+                        <h3>${room.category}</h3>
+                        <div class="price">${room.price.toLocaleString()} <span>₽</span></div>
+                        <div class="features">${room.capacity} места · ${room.area} м² · ${room.features}</div>
+                        <a href="booking.html" class="btn-book">Забронировать</a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ---------- ФИЛЬТРАЦИЯ ----------
+        function applyFilters() {
+            const category = document.getElementById('category').value;
+            const priceFrom = parseInt(document.getElementById('priceFrom').value) || 0;
+            const priceTo = parseInt(document.getElementById('priceTo').value) || Infinity;
+            const capacity = parseInt(document.getElementById('capacity').value) || 0;
+
+            const filtered = rooms.filter(room => {
+                if (category !== 'all' && room.category !== category) return false;
+                if (room.price < priceFrom || room.price > priceTo) return false;
+                if (capacity > 0 && room.capacity < capacity) return false;
+                return true;
+            });
+
+            renderRooms(filtered);
+        }
+
+        // ---------- СБРОС ----------
+        function resetFilters() {
+            document.getElementById('category').value = 'all';
+            document.getElementById('priceFrom').value = '';
+            document.getElementById('priceTo').value = '';
+            document.getElementById('capacity').value = '';
+            renderRooms(rooms);
+        }
+
+        // ---------- ИНИЦИАЛИЗАЦИЯ ----------
+        renderRooms(rooms);
+    </script>
 </body>
 </html>
